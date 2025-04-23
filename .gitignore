@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/DatingApp_API/DatingApp_API.csproj
+/DatingApp_API/appsettings.json
