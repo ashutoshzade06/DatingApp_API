@@ -35,7 +35,9 @@ namespace DatingApp_API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDTO loginDTO)
         {
-            var user = await context.Users.FirstOrDefaultAsync(x=>x.UserName==loginDTO.Username.ToLower());
+            var user = await context.Users
+                .Include(p=>p.Photos)   //Note : if you dont write this it will not fetc photos, only fetches users without this
+                  .FirstOrDefaultAsync(x=>x.UserName==loginDTO.Username.ToLower());
             
             if (user==null) return Unauthorized("Invalid Username");
 
@@ -47,7 +49,11 @@ namespace DatingApp_API.Controllers
             {
                 if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Unauthorised");
             }
-            return new UserDto {Username=user.UserName, Token=tokenService.CreateToken(user)};
+            return new UserDto { 
+                Username = user.UserName, 
+                Token = tokenService.CreateToken(user),
+                PhotoUrl=user.Photos.FirstOrDefault(x=>x.IsMain)?.Url
+            };
         }
         
     }
