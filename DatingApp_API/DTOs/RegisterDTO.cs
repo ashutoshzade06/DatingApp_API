@@ -4,11 +4,16 @@ namespace DatingApp_API
 {
     public class RegisterDTO
     {
-        [Required]
-        public string Username { get; set; } = string.Empty;
 
-        [StringLength(8,MinimumLength =4)]
+        [Required] public string Username { get; set; }=string.Empty;
+        [Required] public string? KnownAs { get; set; }
+        [Required] public string? Gender { get; set; }
+        [Required] public string? DateOfBirth { get; set; }
+        [Required] public string? City { get; set; }
+        [Required] public string? Country { get; set; }
+
+        [StringLength(8, MinimumLength = 4)]
         [Required]
-        public  string Password { get; set; }= string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }

@@ -2,6 +2,7 @@
 using CloudinaryDotNet.Actions;
 using DatingApp_API.DTOs;
 using DatingApp_API.Extensions;
+using DatingApp_API.Helpers;
 using DatingApp_API.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,11 @@ namespace DatingApp_API.Controllers
         IPhotoService photoService) : BaseController
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery]UserParams userParams)
         {
-            var users = await userRepository.GetMembersAsync();
+            userParams.CurrentUsername = User.GetUsername();
+            var users = await userRepository.GetMembersAsync(userParams);
+            Response.AddPaginationHeader(users);
             return Ok(users);
         }
 
@@ -53,7 +56,14 @@ namespace DatingApp_API.Controllers
             var result = await photoService.AddPhotoAsync(file);
             if (result.Error != null) return BadRequest(result.Error.Message);
 
-            var photo = new Photo { Url = result.SecureUrl.AbsoluteUri,PublicId=result.PublicId };
+            var photo = new Photo {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId=result.PublicId 
+            };
+
+            if (user.Photos.Count == 0)
+                photo.IsMain = true;
+
 
             user.Photos.Add(photo);
 

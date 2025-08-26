@@ -1,4 +1,5 @@
 ﻿using DatingApp_API.Data;
+using DatingApp_API.Helpers;
 using DatingApp_API.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,9 +19,9 @@ namespace DatingApp_API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<LogUserActivity>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
-
             return services;
         }
     }
